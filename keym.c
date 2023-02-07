@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <signal.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/select.h>
 #include <X11/extensions/XTest.h>
@@ -12,15 +14,25 @@ static const char* unmap[] = {"w", "a", "s", "d", "q", "e", "r", "f", "g", "h", 
 static Display *display;
 static char keymap[32] = {0};
 
+static KeySym *keysyms, *original;
+static int first_keycode, max_keycode, ks_per_keystroke;
+
 char pressed(int keycode)
 {
     KeyCode c = XKeysymToKeycode(display, keycode);
     return (keymap[c / 8] & (1 << c % 8)) > 0;
 }
 
-int main()
+void restore(void)
 {
-    KeySym *keysyms, *original;
+    /* restore the original mapping */
+    XChangeKeyboardMapping(display, first_keycode, ks_per_keystroke, original,
+                           max_keycode-first_keycode);
+    XCloseDisplay(display);
+}
+
+int main(void)
+{
     fd_set in_fds;
     struct timeval tv;
     int x11_fd;
@@ -29,7 +41,6 @@ int main()
     char key_delta[6] = {0}; /* left, right, up, down, scroll up, scroll down */
     char speed = 2;          /* dash, fast, normal, slow, crawl */
     char quit = 0;
-    int first_keycode, max_keycode, ks_per_keystroke;
     int num_keycodes;
     int i,j;
     int len = sizeof(unmap)/sizeof(unmap[0]);
@@ -71,6 +82,16 @@ int main()
     /* do the unmapping */
     XChangeKeyboardMapping(display, first_keycode, ks_per_keystroke, keysyms, max_keycode-first_keycode);
 
+    if (atexit(restore)) {
+        restore();
+        exit(1);
+    }
+    if (signal(SIGTERM, exit) == SIG_ERR ||
+        signal(SIGINT, exit) == SIG_ERR) {
+       perror("signal");
+       exit(1);
+    }
+
     while (1)
     {
         FD_ZERO(&in_fds);
@@ -110,11 +131,7 @@ int main()
         if (!pressed(XK_x) && !pressed(XK_m))
             quit = 1;
 
-        if (quit == 1 && (pressed(XK_x) || pressed(XK_m)))
-        {
-            /* restore the original mapping */
-            XChangeKeyboardMapping(display, first_keycode, ks_per_keystroke, original, max_keycode-first_keycode);
-            XCloseDisplay(display);
+        if (quit == 1 && (pressed(XK_x) || pressed(XK_m))) {
             return 0;
         }
 
