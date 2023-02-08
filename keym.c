@@ -9,7 +9,12 @@
 static const int idle_cutoff = 500; /* time before program exits by itself if no usage detected */
 static const int speeds[5] = {80, 400, 1400, 4000, 10000}; /* mouse movement speeds */
 static const int scroll[5] = {1000, 5000, 30000, 50000, 100000}; /* scrolling speeds */
-static const char* unmap[] = {"w", "a", "s", "d", "q", "e", "r", "f", "g", "h", "j", "k", "l", "semicolon", "i", "c", "u", "o", "Shift_L", "backslash", "Tab", "Left", "Right", "Up", "Down", "x", "m", "Control_R"};
+
+static const char* unmap[] = {
+    "t", "space", "b", "w", "a", "s", "d", "q", "e", "r", "f", "v",
+    "g", "h", "j", "k", "l", "semicolon", "i", "c", "u", "o", "Shift_L",
+    "backslash", "Tab", "Left", "Right", "Up", "Down", "x", "m", "Control_R",
+};
 
 static Display *display;
 static char keymap[32] = {0};
@@ -117,7 +122,7 @@ int main(void)
         speed = 2;
         speed = (pressed(XK_t)) ? 4 : speed;
         speed = (pressed(XK_g) || pressed(XK_backslash) || pressed(XK_Tab)) ? 3 : speed;
-        speed = (pressed(XK_b) || pressed(XK_Shift_L)) ? 1 : speed;
+        speed = (pressed(XK_v) || pressed(XK_b) || pressed(XK_Shift_L)) ? 1 : speed;
         speed = (pressed(XK_space)) ? 0 : speed;
 
         /* mouse clicks */
