@@ -104,10 +104,10 @@ int main(void)
         XQueryKeymap(display, keymap);
 
         /* mouse movement */
-        key_delta[0] = pressed(XK_Left)  || pressed(XK_a);
-        key_delta[1] = pressed(XK_Right) || pressed(XK_d);
-        key_delta[2] = pressed(XK_Up)    || pressed(XK_w);
-        key_delta[3] = pressed(XK_Down)  || pressed(XK_s);
+        key_delta[0] = pressed(XK_Left)  || pressed(XK_h);
+        key_delta[1] = pressed(XK_Right) || pressed(XK_l);
+        key_delta[2] = pressed(XK_Up)    || pressed(XK_k);
+        key_delta[3] = pressed(XK_Down)  || pressed(XK_j);
 
         /* scrolling */
         key_delta[4] = pressed(XK_r);
@@ -115,15 +115,15 @@ int main(void)
 
         /* speed adjustment from slow to fast */
         speed = 2;
-        speed = (pressed(XK_g)) ? 4 : speed;
-        speed = (pressed(XK_h) || pressed(XK_backslash) || pressed(XK_Tab)) ? 3 : speed;
-        speed = (pressed(XK_l) || pressed(XK_Shift_L)) ? 1 : speed;
-        speed = (pressed(XK_semicolon)) ? 0 : speed;
+        speed = (pressed(XK_t)) ? 4 : speed;
+        speed = (pressed(XK_g) || pressed(XK_backslash) || pressed(XK_Tab)) ? 3 : speed;
+        speed = (pressed(XK_b) || pressed(XK_Shift_L)) ? 1 : speed;
+        speed = (pressed(XK_space)) ? 0 : speed;
 
         /* mouse clicks */
-        XTestFakeButtonEvent(display, Button1, (pressed(XK_j) || pressed(XK_q)) ? True : False, CurrentTime);
-        XTestFakeButtonEvent(display, Button3, (pressed(XK_k) || pressed(XK_e)) ? True : False, CurrentTime);
-        XTestFakeButtonEvent(display, Button2, (pressed(XK_i) || pressed(XK_c)) ? True : False, CurrentTime);
+        XTestFakeButtonEvent(display, Button1, (pressed(XK_a) || pressed(XK_w)) ? True : False, CurrentTime);
+        XTestFakeButtonEvent(display, Button3, (pressed(XK_s) || pressed(XK_e)) ? True : False, CurrentTime);
+        XTestFakeButtonEvent(display, Button2, (pressed(XK_d) || pressed(XK_c)) ? True : False, CurrentTime);
         XTestFakeButtonEvent(display, 8, pressed(XK_u) ? True : False, CurrentTime);
         XTestFakeButtonEvent(display, 9, pressed(XK_o) ? True : False, CurrentTime);
 
